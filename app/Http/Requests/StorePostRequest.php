@@ -13,7 +13,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,16 @@ class StorePostRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'photo' => 'required|mimes:jpg,bmp,png',
+            'description' => 'required'
+        ];
+    }
+
+    public function messages(){
+        return[
+            'photo.required' => 'A imagen é obrigatória !!!',
+            'photo.mines' => 'Extensão não suportada !!!',
+            'description.required' => 'Uma descrição para imagen é obrigatória'
         ];
     }
 }

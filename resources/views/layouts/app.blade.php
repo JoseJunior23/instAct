@@ -49,6 +49,17 @@
         </script>
     @endif
 
+    @if ($errors->any())
+        @foreach ($$errors->all() as $error)
+            <script>
+                Toast.fire({
+                    icon: 'error',
+                    title: '{{ session('error') }}'
+                })
+            </script>
+        @endforeach
+    @endif
+
     @stack('scripts')
 </body>
 </html>

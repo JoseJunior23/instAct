@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Http\Requests\StorePostRequest;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdatePostRequest;
 
 class PostController extends Controller
 {
@@ -15,7 +16,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $user = auth()->user();
+        $posts = Post::orderBy('id', 'desc')->get();
+        return view('dashboard', compact('posts', 'user'));
     }
 
     /**
@@ -25,7 +28,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $user = auth()->user();
+        return view('posts.create', compact('user'));
     }
 
     /**
@@ -36,9 +40,18 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
-    }
+        $user = auth()->user();
+        $path = $request->photo->store('public/images');
+        $url = Storage::url($path);
 
+        $post = Post::create([
+            'image' => $url,
+            'description' => $request->description,
+            'user_id' =>$user->id
+        ]);
+
+        return redirect('/dashboard')->with('success', 'Post criado com sucesso');
+    }
     /**
      * Display the specified resource.
      *
